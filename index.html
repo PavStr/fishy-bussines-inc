@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="no">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mo i Rana Sardinerklubb</title>
+    <meta
+      name="description"
+      content="Offisiell informasjonsside for Mo i Rana Sardinerklubb."
+    >
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="page">
+      <header class="identity" aria-labelledby="site-title">
+        <img
+          id="site-logo"
+          class="logo"
+          src="assets/logo/web/logo-320.png"
+          srcset="assets/logo/web/logo-320.png 320w, assets/logo/web/logo-640.png 640w"
+          sizes="(max-width: 700px) 160px, 220px"
+          alt="Logo for Mo i Rana Sardinerklubb"
+          width="320"
+          height="258"
+        >
+        <p class="eyebrow">Mo i Rana</p>
+        <h1 id="site-title"></h1>
+        <p id="site-tagline" class="tagline"></p>
+        <p id="site-intro" class="intro"></p>
+      </header>
+
+      <section id="purpose-section" aria-labelledby="purpose-title">
+        <h2 id="purpose-title">Formål</h2>
+        <div id="purpose-body" class="stack"></div>
+        <p id="purpose-statutes" class="resource-link"></p>
+      </section>
+
+      <section id="events-section" aria-labelledby="events-title">
+        <h2 id="events-title">Kommende arrangementer</h2>
+        <div id="events-status" class="muted" role="status" aria-live="polite"></div>
+        <ul id="events-list" class="events" aria-live="polite"></ul>
+      </section>
+
+      <section id="links-section" aria-labelledby="links-title" hidden>
+        <h2 id="links-title">Offisielle lenker</h2>
+        <ul id="links-list" class="plain-list"></ul>
+      </section>
+
+      <section id="contacts-section" aria-labelledby="contacts-title" hidden>
+        <h2 id="contacts-title">Kontakt</h2>
+        <ul id="contacts-list" class="plain-list"></ul>
+      </section>
+
+      <section id="strava-section" aria-labelledby="strava-title">
+        <h2 id="strava-title">Strava</h2>
+        <div class="strava-block">
+          <p class="muted">Uoffisielt hjørne. Litt statistikk skader ikke.</p>
+          <iframe
+            allowtransparency="true"
+            frameborder="0"
+            height="160"
+            scrolling="no"
+            src="https://www.strava.com/clubs/1364336/latest-rides/1bb725ad6b697fe86f29bdc387d6d9473ebd245b?show_rides=false"
+            width="300"
+            title="Siste Strava-statistikk for klubben"
+          ></iframe>
+        </div>
+      </section>
+
+      <footer id="site-footer" class="footer">
+        <p id="footer-note"></p>
+      </footer>
+    </main>
+
+    <script src="site-config.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
