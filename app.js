@@ -7,7 +7,7 @@
 
   renderStaticContent(config);
   loadEvents(config.events).catch(() => {
-    renderEmptyEvents(config.events.emptyMessage);
+    renderEventsError();
   });
 
   function renderStaticContent(siteConfig) {
@@ -60,12 +60,13 @@
   }
 
   async function loadEvents(eventsConfig) {
-    if (!eventsConfig.sheetId) {
+    const feedUrl = eventsConfig.csvUrl || buildGoogleSheetCsvUrl(eventsConfig.sheetId, eventsConfig.tabName);
+
+    if (!feedUrl) {
       renderEmptyEvents(eventsConfig.emptyMessage);
       return;
     }
 
-    const feedUrl = buildGoogleSheetCsvUrl(eventsConfig.sheetId, eventsConfig.tabName);
     const response = await fetch(feedUrl, { mode: "cors" });
     if (!response.ok) {
       throw new Error("Event feed request failed.");
@@ -84,6 +85,9 @@
   }
 
   function buildGoogleSheetCsvUrl(sheetId, tabName) {
+    if (!sheetId) {
+      return "";
+    }
     const sheet = encodeURIComponent(tabName || "Events");
     return `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=${sheet}`;
   }
@@ -92,21 +96,28 @@
     const today = getTodayInTimeZone(timezone);
 
     return rows
-      .map((row) => ({
-        date: (row.date || "").trim(),
-        title: (row.title || "").trim(),
-        description: (row.description || "").trim(),
-        location: (row.location || "").trim(),
-        link: (row.link || "").trim(),
-        visible: (row.visible || "").trim().toLowerCase(),
-        status: (row.status || "").trim().toLowerCase()
-      }))
+      .map((row) => {
+        const date = normalizeDate(
+          firstValue(row, ["date", "dato", "event_date", "arrangement_dato"])
+        );
+        const visibleValue = firstValue(row, ["visible", "synlig", "publiser", "published"]);
+        const statusValue = firstValue(row, ["status", "tilstand"]);
+
+        return {
+          date,
+          title: firstValue(row, ["title", "tittel", "navn"]).trim(),
+          description: firstValue(row, ["description", "beskrivelse", "tekst"]).trim(),
+          location: firstValue(row, ["location", "sted", "venue"]).trim(),
+          link: firstValue(row, ["link", "lenke", "url"]).trim(),
+          visible: normalizeVisible(visibleValue),
+          status: normalizeStatus(statusValue)
+        };
+      })
       .filter((event) => {
         return (
           event.date &&
-          /^\d{4}-\d{2}-\d{2}$/.test(event.date) &&
           event.title &&
-          event.visible === "yes" &&
+          event.visible &&
           event.status !== "completed" &&
           event.date >= today
         );
@@ -176,6 +187,20 @@
     const status = document.getElementById("events-status");
     list.innerHTML = "";
     status.textContent = message;
+  }
+
+  function renderEventsError() {
+    const list = document.getElementById("events-list");
+    const status = document.getElementById("events-status");
+    const isLocalFile =
+      typeof window !== "undefined" &&
+      window.location &&
+      window.location.protocol === "file:";
+
+    list.innerHTML = "";
+    status.textContent = isLocalFile
+      ? "Kunne ikke laste arrangementer fra Google Sheets når siden åpnes som lokal fil. Åpne siden via GitHub Pages eller en lokal webserver."
+      : "Kunne ikke laste arrangementer akkurat nå.";
   }
 
   function renderInfoList(section, list, items) {
@@ -263,7 +288,7 @@
     }
 
     const [headerRow, ...dataRows] = rows;
-    const headers = headerRow.map((header) => header.trim());
+    const headers = headerRow.map((header) => normalizeHeader(header));
 
     return dataRows
       .filter((dataRow) => dataRow.some((value) => value.trim() !== ""))
@@ -273,6 +298,74 @@
           return record;
         }, {});
       });
+  }
+
+  function normalizeHeader(header) {
+    return (header || "")
+      .replace(/^\uFEFF/, "")
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, "_");
+  }
+
+  function firstValue(record, keys) {
+    for (const key of keys) {
+      if (record[key] !== undefined && record[key] !== null && String(record[key]).trim() !== "") {
+        return String(record[key]);
+      }
+    }
+    return "";
+  }
+
+  function normalizeDate(value) {
+    const trimmed = String(value || "").trim();
+    if (!trimmed) {
+      return "";
+    }
+
+    if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) {
+      return trimmed;
+    }
+
+    const dottedMatch = trimmed.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/);
+    if (dottedMatch) {
+      const [, day, month, year] = dottedMatch;
+      return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+    }
+
+    const slashedMatch = trimmed.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+    if (slashedMatch) {
+      const [, day, month, year] = slashedMatch;
+      return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+    }
+
+    return "";
+  }
+
+  function normalizeVisible(value) {
+    const normalized = String(value || "").trim().toLowerCase();
+    if (!normalized) {
+      return true;
+    }
+
+    return ["yes", "ja", "true", "1", "x"].includes(normalized);
+  }
+
+  function normalizeStatus(value) {
+    const normalized = String(value || "").trim().toLowerCase();
+    if (!normalized) {
+      return "planned";
+    }
+
+    if (["completed", "gjennomført", "fullført", "done"].includes(normalized)) {
+      return "completed";
+    }
+
+    if (["confirmed", "bekreftet"].includes(normalized)) {
+      return "confirmed";
+    }
+
+    return "planned";
   }
 
   function getTodayInTimeZone(timeZone) {

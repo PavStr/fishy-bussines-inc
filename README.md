@@ -16,7 +16,8 @@ Update `site-config.js` with:
 
 1. Public contact addresses when they are ready.
 2. The Google Sheet ID for the events feed.
-3. Any revised public-facing copy if the club wants to tune tone or wording.
+3. Or, preferably, a published public CSV URL for the events feed.
+4. Any revised public-facing copy if the club wants to tune tone or wording.
 
 Empty fields are automatically hidden in the interface.
 
@@ -39,9 +40,10 @@ Field expectations:
 - `visible`: `yes` or `no`
 - `status`: `planned`, `confirmed`, or `completed`
 
-The site reads the sheet from:
+The site can read events in either of these ways:
 
-`https://docs.google.com/spreadsheets/d/<SHEET_ID>/gviz/tq?tqx=out:csv&sheet=Events`
+- Preferred: a published CSV URL
+- Alternative: a direct Google Sheets CSV endpoint built from the sheet ID
 
 The page renders only rows where:
 
@@ -74,20 +76,30 @@ date,title,description,location,link,visible,status
 2026-06-03,Sardinavaganza,Sosial samling og aktivitet,Mo i Rana,https://example.com,yes,planned
 ```
 
-5. Make the sheet publicly readable.
-6. Copy the Sheet ID from:
+5. Publish the sheet as CSV and copy the published URL, for example:
+
+```text
+https://docs.google.com/spreadsheets/d/e/.../pub?gid=0&single=true&output=csv
+```
+
+6. Paste that into `events.csvUrl` in `site-config.js`.
+
+Alternative:
+
+7. If you do not want to use a published CSV URL, make the sheet publicly readable and copy the Sheet ID from:
 
 ```text
 https://docs.google.com/spreadsheets/d/SHEET_ID/edit#gid=0
 ```
 
-7. Paste it into `events.sheetId` in `site-config.js`.
+8. Paste it into `events.sheetId` in `site-config.js`.
 
 Example:
 
 ```js
 events: {
-  sheetId: "1abcDEFghijkLMNopQRstuVWxyz1234567890",
+  csvUrl: "https://docs.google.com/spreadsheets/d/e/.../pub?gid=0&single=true&output=csv",
+  sheetId: "",
   tabName: "Events",
   timezone: "Europe/Oslo",
   emptyMessage: "Ingen kommende arrangementer er kunngjort."

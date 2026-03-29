@@ -54,8 +54,9 @@ window.SITE_CONFIG = Object.freeze({
     ]
   },
   events: {
-    // Sett inn Google Sheet-ID her når arket er klart.
-    // URL-format: https://docs.google.com/spreadsheets/d/SHEET_ID/edit#gid=0
+    // Use a published CSV feed for public event data.
+    csvUrl:
+      "https://docs.google.com/spreadsheets/d/e/2PACX-1vR08JCwF80ToEVl_THNZ66bpDrVP-a5hLCBPRW4khtHS1mQYCRmo3GATc-RgNjUWwxZGB0Fx2_JFn1u/pub?gid=0&single=true&output=csv",
     sheetId: "",
     tabName: "Events",
     timezone: "Europe/Oslo",
