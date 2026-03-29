@@ -18,6 +18,11 @@ window.SITE_CONFIG = Object.freeze({
   },
   officialLinks: [
     {
+      label: "Påmelding",
+      description: "Skjema for deltakelse og interesse",
+      href: "https://docs.google.com/forms/d/e/1FAIpQLScV_EBb4yrTWKA-y1Agejogu7QV1D4IYwvVlRHFmlFYwdU9_g/viewform"
+    },
+    {
       label: "Facebook",
       description: "Kunngjøringer og bevegelser i stimen",
       href: "https://www.facebook.com/groups/sardinerklubben"
