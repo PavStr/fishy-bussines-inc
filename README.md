@@ -1,30 +1,54 @@
 # Mo i Rana Sardinerklubb
 
-A minimal one-page public website for Mo i Rana Sardinerklubb, designed for GitHub Pages.
+Public-facing one-page website for Mo i Rana Sardinerklubb, built as a small static site and intended for straightforward publishing on GitHub Pages or any comparable static host.
 
-## Structure
-- `index.html`: semantic one-page layout
-- `styles.css`: minimal site styling
-- `site-config.js`: static copy, links, contacts, and events configuration
-- `app.js`: client-side rendering and Google Sheets event loading
-- `assets/docs/`: public documents
-- `assets/logo/`: original logo source and web-ready variants
-- `.github/workflows/deploy-pages.yml`: GitHub Pages deployment workflow
+The project is intentionally simple:
 
-## Before publishing
-Update `site-config.js` with:
+- no build step
+- no framework dependency
+- no server-side runtime
+- content and links are managed through a single configuration file
+- events can be sourced from a public Google Sheets CSV feed
 
-1. Public contact addresses when they are ready.
-2. The Google Sheet ID for the events feed.
-3. Or, preferably, a published public CSV URL for the events feed.
-4. Any revised public-facing copy if the club wants to tune tone or wording.
+## Project Goals
 
-Empty fields are automatically hidden in the interface.
+This repository is designed around a few practical constraints:
 
-## Google Sheets events feed
-Create a publicly readable Google Sheet with a tab named `Events`.
+- keep the site easy to understand for the next maintainer
+- keep recurring updates lightweight
+- avoid introducing infrastructure that is unnecessary for a public informational site
+- preserve a clean separation between public website content and anything that should remain private
 
-Use these columns exactly:
+## Repository Layout
+
+- `index.html` defines the semantic one-page document structure
+- `styles.css` contains the site styling
+- `app.js` renders configured content and loads event data in the browser
+- `site-config.js` holds public-facing copy, links, and event feed settings
+- `assets/docs/` stores public downloadable documents
+- `assets/logo/` contains source and web-ready logo assets
+- `CNAME` is used when the site is served on a custom domain
+
+## How It Works
+
+The page renders in two layers:
+
+1. Static public content is loaded from `site-config.js`.
+2. Upcoming events are fetched client-side from a public CSV feed.
+
+If the event feed is unavailable, the site falls back to a calm, user-friendly empty/error state rather than failing the entire page.
+
+This keeps the editing model simple: normal text updates happen in `site-config.js`, while routine event maintenance can happen in a spreadsheet rather than in HTML.
+
+## Event Feed
+
+The site supports a public Google Sheets-backed event feed. The preferred approach is to publish the sheet as CSV and point the site to that URL.
+
+Expected tab name:
+
+- `Events`
+
+Expected columns:
 
 - `date`
 - `title`
@@ -36,87 +60,69 @@ Use these columns exactly:
 
 Field expectations:
 
-- `date`: `YYYY-MM-DD`
-- `visible`: `yes` or `no`
-- `status`: `planned`, `confirmed`, or `completed`
+- `date` uses `YYYY-MM-DD`
+- `visible` uses `yes` or `no`
+- `status` uses `planned`, `confirmed`, or `completed`
 
-The site can read events in either of these ways:
-
-- Preferred: a published CSV URL
-- Alternative: a direct Google Sheets CSV endpoint built from the sheet ID
-
-The page renders only rows where:
+Only rows that meet all of the following conditions are rendered:
 
 - `visible=yes`
-- `status!=completed`
+- `status` is not `completed`
 - `date` is today or later in `Europe/Oslo`
 
-## Simple update pipeline
-The intended workflow is deliberately small:
+## Local Development
 
-1. The board edits the Google Sheet.
-2. The website reads the sheet directly as CSV.
-3. Updated events appear on the next page refresh.
+Because this is a static site, local development only requires a simple web server.
 
-That means there is no CMS, no database, and no need to edit HTML for normal event updates.
+Examples:
 
-## How to connect the sheet
-1. Create a Google Sheet.
-2. Name the tab `Events`.
-3. Add this header row:
-
-```text
-date,title,description,location,link,visible,status
+```bash
+python3 -m http.server 8000
 ```
 
-4. Add rows such as:
+or
 
-```text
-2026-04-12,Årsmøte,Årsmøte for medlemmer,Mo i Rana,,yes,confirmed
-2026-06-03,Sardinavaganza,Sosial samling og aktivitet,Mo i Rana,https://example.com,yes,planned
+```bash
+npx serve .
 ```
 
-5. Publish the sheet as CSV and copy the published URL, for example:
+Then open `http://localhost:8000`.
 
-```text
-https://docs.google.com/spreadsheets/d/e/.../pub?gid=0&single=true&output=csv
-```
+Opening `index.html` directly as a `file://` URL is not recommended when testing event loading, because browser security rules can block the remote fetch behavior used for the CSV feed.
 
-6. Paste that into `events.csvUrl` in `site-config.js`.
+## Publishing
 
-Alternative:
+The site is suitable for GitHub Pages and other static hosting platforms.
 
-7. If you do not want to use a published CSV URL, make the sheet publicly readable and copy the Sheet ID from:
+A typical deployment flow is:
 
-```text
-https://docs.google.com/spreadsheets/d/SHEET_ID/edit#gid=0
-```
+1. Update public content or configuration.
+2. Commit changes to the default branch.
+3. Let the static host publish the repository contents.
 
-8. Paste it into `events.sheetId` in `site-config.js`.
+If a GitHub Pages workflow is enabled for the repository, pushes to the publishing branch can be deployed automatically.
 
-Example:
+## Configuration Guidelines
 
-```js
-events: {
-  csvUrl: "https://docs.google.com/spreadsheets/d/e/.../pub?gid=0&single=true&output=csv",
-  sheetId: "",
-  tabName: "Events",
-  timezone: "Europe/Oslo",
-  emptyMessage: "Ingen kommende arrangementer er kunngjort."
-}
-```
+Treat `site-config.js` as public.
 
-Once that is done, the maintenance loop is simply: edit sheet -> refresh page.
+Only place information there that is intended to appear in the browser or to be retrievable by anyone visiting the site. That includes:
 
-## Future option
-If the club later wants more control, a GitHub Action could fetch the sheet and write a local `events.json` on a schedule. For v1, direct Google Sheets loading is the simplest approach.
+- public organization copy
+- public links
+- public contact endpoints
+- public event feed URLs
 
-## Local testing
-Serve the repository through any simple static server and verify:
+Do not place confidential or operationally sensitive information in this repository, including:
 
-- the page reads well on mobile and desktop
-- links and the PDF open correctly
-- the empty or failing event feed shows a calm fallback state
+- private email addresses not intended for publication
+- unpublished documents
+- internal notes
+- non-public spreadsheet links
+- tokens, secrets, or credentials of any kind
 
-## Deployment
-Pushes to `main` trigger the GitHub Pages workflow and publish the repository root as a static site.
+## Maintenance Notes
+
+For a site of this size, restraint is a feature. Before adding tooling, ask whether it materially improves maintainability, reliability, or editorial workflow. In most cases, the current static approach should remain the default.
+
+If the project later needs more control over event publishing, a reasonable next step would be to generate a local JSON snapshot from a scheduled job rather than introducing a full CMS.
