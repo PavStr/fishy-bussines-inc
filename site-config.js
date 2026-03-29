@@ -2,13 +2,14 @@ window.SITE_CONFIG = Object.freeze({
   brand: {
     name: "Mo i Rana Sardinerklubb",
     tagline:
-      "Lokal forening for arrangementer, fellesskap og tydelig identitet.",
+      "Lokal forening for fellesskap, arrangementer og sardinsk alvor.",
     intro: ""
   },
   purpose: {
     paragraphs: [
-      "Mo i Rana Sardinerklubb er en frivillig forening i Mo i Rana. Klubben samler mennesker gjennom åpne arrangementer og lokal forankring.",
-      "Arbeidet skal være ryddig, inkluderende og synlig. Vedtektene er foreningens styrende dokument."
+      "Mo i Rana Sardinerklubb er en frivillig forening i Mo i Rana. Klubben samler mennesker gjennom åpne arrangementer, lokal tilstedeværelse og en tydelig identitet bygget på orden, fellesskap og et passende mål av hermetisk alvor.",
+      "Foreningen skal være inkluderende, synlig og virksom. Den arbeider med arrangementer, samarbeid og offentlig nærvær, og gjør dette med den høytidelige nøkternheten som bare en sardinerklubb kan forsvare.",
+      "Vedtektene er foreningens styrende dokument. Denne siden er den korte, offentlige versjonen."
     ],
     statutes: {
       label: "Vedtekter",
@@ -18,12 +19,12 @@ window.SITE_CONFIG = Object.freeze({
   officialLinks: [
     {
       label: "Facebook",
-      description: "Kunngjøringer",
+      description: "Kunngjøringer og bevegelser i stimen",
       href: "https://www.facebook.com/groups/sardinerklubben"
     },
     {
       label: "Brønnøysundregisteret",
-      description: "Registrering",
+      description: "Formell eksistens",
       href: "https://virksomhet.brreg.no/nb/oppslag/underenheter/934310640"
     },
     {
@@ -58,7 +59,7 @@ window.SITE_CONFIG = Object.freeze({
     sheetId: "",
     tabName: "Events",
     timezone: "Europe/Oslo",
-    emptyMessage: "Ingen kommende arrangementer."
+    emptyMessage: "Ingen kommende arrangementer er kunngjort."
   },
   footer: ""
 });
