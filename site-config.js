@@ -39,22 +39,18 @@ window.SITE_CONFIG = Object.freeze({
     }
   ],
   contacts: {
-    intro: "",
+    intro:
+      "Skriftlige henvendelser bes rettet til korrekt funksjon. Klubben etterstreber ordnede kommunikasjonslinjer og ber om at saken angis med nødvendig nøkternhet.",
     items: [
       {
-        role: "Generelle henvendelser",
-        value: "",
-        href: ""
+        role: "Styret",
+        value: "board@moirana.sk",
+        href: "mailto:board@moirana.sk"
       },
       {
-        role: "Medlemskap",
-        value: "",
-        href: ""
-      },
-      {
-        role: "Styret / presse / samarbeid",
-        value: "",
-        href: ""
+        role: "Presse",
+        value: "press@moirana.sk",
+        href: "mailto:press@moirana.sk"
       }
     ]
   },

@@ -57,6 +57,12 @@
           node: buildLink(item.value, item.href, item.role)
         }))
     );
+
+    const contactsIntro = document.getElementById("contacts-intro");
+    if (contactsIntro) {
+      contactsIntro.textContent = siteConfig.contacts.intro || "";
+      contactsIntro.hidden = !siteConfig.contacts.intro;
+    }
   }
 
   async function loadEvents(eventsConfig) {
