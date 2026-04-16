@@ -55,12 +55,14 @@ Expected columns:
 - `description`
 - `location`
 - `link`
+- `featured`
 - `visible`
 - `status`
 
 Field expectations:
 
 - `date` uses `YYYY-MM-DD`
+- `featured` uses `yes` or `no`
 - `visible` uses `yes` or `no`
 - `status` uses `planned`, `confirmed`, or `completed`
 
@@ -69,6 +71,8 @@ Only rows that meet all of the following conditions are rendered:
 - `visible=yes`
 - `status` is not `completed`
 - `date` is today or later in `Europe/Oslo`
+
+If one or more upcoming rows also have `featured=yes`, the first upcoming featured row is shown in a banner above the `Formål` section. The row `link` is used as the banner target, which makes it suitable for Facebook event URLs.
 
 ## Local Development
 

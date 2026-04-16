@@ -69,6 +69,7 @@
     const feedUrl = eventsConfig.csvUrl || buildGoogleSheetCsvUrl(eventsConfig.sheetId, eventsConfig.tabName);
 
     if (!feedUrl) {
+      renderFeaturedEvent(null, eventsConfig);
       renderEmptyEvents(eventsConfig.emptyMessage);
       return;
     }
@@ -81,6 +82,9 @@
     const csv = await response.text();
     const rows = parseCsv(csv);
     const events = normalizeEvents(rows, eventsConfig.timezone);
+    const featuredEvent = events.find((event) => event.featured);
+
+    renderFeaturedEvent(featuredEvent, eventsConfig);
 
     if (!events.length) {
       renderEmptyEvents(eventsConfig.emptyMessage);
@@ -115,6 +119,9 @@
           description: firstValue(row, ["description", "beskrivelse", "tekst"]).trim(),
           location: firstValue(row, ["location", "sted", "venue"]).trim(),
           link: firstValue(row, ["link", "lenke", "url"]).trim(),
+          featured: normalizeFeatured(
+            firstValue(row, ["featured", "fremhevet", "highlighted", "pin"])
+          ),
           visible: normalizeVisible(visibleValue),
           status: normalizeStatus(statusValue)
         };
@@ -129,6 +136,54 @@
         );
       })
       .sort((left, right) => left.date.localeCompare(right.date));
+  }
+
+  function renderFeaturedEvent(event, eventsConfig) {
+    const section = document.getElementById("featured-section");
+    const title = document.getElementById("featured-title");
+    const meta = document.getElementById("featured-meta");
+    const description = document.getElementById("featured-description");
+    const link = document.getElementById("featured-link");
+    const kicker = document.getElementById("featured-kicker");
+
+    if (!section || !title || !meta || !description || !link || !kicker) {
+      return;
+    }
+
+    if (!event || !event.link) {
+      section.hidden = true;
+      title.textContent = "";
+      meta.textContent = "";
+      description.textContent = "";
+      link.textContent = "";
+      link.removeAttribute("href");
+      return;
+    }
+
+    const metaParts = [formatDate(event.date)];
+    if (event.location) {
+      metaParts.push(event.location);
+    }
+
+    kicker.textContent = eventsConfig.featuredLabel || "Fremhevet arrangement";
+    title.textContent = event.title;
+    meta.textContent = metaParts.join(" · ");
+    meta.hidden = !meta.textContent;
+    description.textContent = event.description || "";
+    description.hidden = !event.description;
+    link.textContent = eventsConfig.featuredCta || "Se arrangement";
+    link.href = event.link;
+    link.setAttribute("aria-label", event.title);
+
+    if (/^https?:\/\//.test(event.link)) {
+      link.target = "_blank";
+      link.rel = "noreferrer";
+    } else {
+      link.removeAttribute("target");
+      link.removeAttribute("rel");
+    }
+
+    section.hidden = false;
   }
 
   function renderEvents(events) {
@@ -196,6 +251,7 @@
   }
 
   function renderEventsError() {
+    renderFeaturedEvent(null, {});
     const list = document.getElementById("events-list");
     const status = document.getElementById("events-status");
     const isLocalFile =
@@ -352,6 +408,15 @@
     const normalized = String(value || "").trim().toLowerCase();
     if (!normalized) {
       return true;
+    }
+
+    return ["yes", "ja", "true", "1", "x"].includes(normalized);
+  }
+
+  function normalizeFeatured(value) {
+    const normalized = String(value || "").trim().toLowerCase();
+    if (!normalized) {
+      return false;
     }
 
     return ["yes", "ja", "true", "1", "x"].includes(normalized);

@@ -118,6 +118,55 @@ h3 {
   margin-top: 1rem;
 }
 
+.featured-banner {
+  margin-top: 2rem;
+  padding: 1.15rem 1.2rem 1.25rem;
+  border: 1px solid color-mix(in srgb, var(--accent) 20%, white);
+  border-radius: 1rem;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--accent) 10%, white), white 58%),
+    var(--bg);
+  box-shadow: 0 10px 30px rgba(15, 95, 103, 0.08);
+}
+
+.featured-kicker {
+  color: var(--accent);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.featured-title {
+  margin: 0.35rem 0 0;
+  color: var(--text);
+  font-size: clamp(1.35rem, 2.8vw, 1.8rem);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  text-transform: none;
+}
+
+.featured-meta,
+.featured-description,
+.featured-link-wrap {
+  margin-top: 0.45rem;
+}
+
+.featured-meta {
+  color: var(--muted);
+}
+
+.featured-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 650;
+}
+
+.featured-link::after {
+  content: "->";
+}
+
 .plain-list,
 .events {
   padding: 0;
@@ -207,6 +256,11 @@ a:hover {
     width: min(100% - 1.25rem, var(--max-width));
     padding-top: 1.5rem;
     padding-bottom: 3rem;
+  }
+
+  .featured-banner {
+    margin-top: 1.5rem;
+    padding: 1rem;
   }
 
   section,
