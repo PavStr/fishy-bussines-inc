@@ -62,7 +62,7 @@ window.SITE_CONFIG = Object.freeze({
     tabName: "Events",
     timezone: "Europe/Oslo",
     featuredLabel: "Fremhevet arrangement",
-    featuredCta: "Se arrangement på Facebook",
+    featuredCta: "Klikk her for å få opp påmeldingskjema!",
     emptyMessage: "Ingen kommende arrangementer er kunngjort."
   },
   footer: ""
