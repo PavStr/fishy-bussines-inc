@@ -8,7 +8,7 @@ window.SITE_CONFIG = Object.freeze({
   purpose: {
     paragraphs: [
       "Mo i Rana Sardinerklubb er en frivillig forening i Mo i Rana. Klubben samler mennesker gjennom åpne arrangementer, lokal tilstedeværelse og en tydelig identitet bygget på orden, fellesskap og et passende mål av hermetisk alvor.",
-      "Foreningen skal være inkluderende, synlig og virksom. Den arbeider med arrangementer, samarbeid og offentlig nærvær, og gjør dette med den høytidelige nøkternheten som bare en sardinerklubb kan forsvare.",
+      "Foreningen skal være inkluderende, synlig og virksom. Den arbeider med arrangementer, samarbeid og offentlig nærvær, og gjør dette med den høytidelige unøkternheten som bare en sardinerklubb kan forsvare.",
       "Vedtektene er foreningens styrende dokument. Denne siden er den korte, offentlige versjonen."
     ],
     statutes: {
@@ -40,7 +40,7 @@ window.SITE_CONFIG = Object.freeze({
   ],
   contacts: {
     intro:
-      "Skriftlige henvendelser bes rettet til korrekt funksjon. Klubben etterstreber ordnede kommunikasjonslinjer og ber om at saken angis med nødvendig nøkternhet.",
+      "Skriftlige henvendelser bes rettet til korrekt funksjon. Klubben etterstreber ordnede kommunikasjonslinjer og ber om at saken angis med nødvendig unøkternhet.",
     items: [
       {
         role: "Styret",
